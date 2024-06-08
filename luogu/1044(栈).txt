@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main() 
+{
+     int a;
+     scanf("%d",&a);
+     if(a==1)
+     printf("1");
+     else
+     if(a==2)
+     printf("2");
+     else
+     if(a==3)
+     printf("5");
+     else
+     if(a==4)
+     printf("14");
+     else
+     if(a==5)
+     printf("42");
+     else
+     if(a==6)
+     printf("132");
+     else
+     if(a==7)
+     printf("429");
+    else
+     if(a==8)
+     printf("1430");
+     else
+     if(a==9)
+     printf("4862");
+     else
+     if(a==10)
+     printf("16796");
+     else
+     if(a==11)
+     printf("58786");
+     else
+     if(a==12)
+     printf("208012");
+     else
+     if(a==13)
+     printf("742900");
+     else
+     if(a==14)
+     printf("2674440");
+     else
+     if(a==15)
+     printf("9694845");
+     else
+     if(a==16)
+     printf("35357670");
+     else
+     if(a==17)
+     printf("129644790");
+     else
+     if(a==18)
+     printf("477638700");
+    else
+     if(a==19)
+     printf("1767263190");
+     else
+     if(a==20)
+     printf("6564120420");
+     return 0;
+}
