@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug C++",
+            "type": "lldb",       // 或 "cppdbg"，取决于你使用的调试器
+            "request": "launch",
+            "program": "${workspaceFolder}/a.out",  // 可执行文件路径
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build cpp"
+        }
+    ]
+}
