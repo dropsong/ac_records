@@ -1,23 +1,39 @@
-// not done
+// tle
 
 // link: https://www.acwing.com/problem/content/description/5021/
 // author: https://github.com/dropsong
 // 逻辑运算转化为集合运算
 
+/*
+NON_ZERO_DIGIT =  "1" / "2" / "3" / "4" / 
+                  "5" / "6" / "7" / "8" / "9"
+DIGIT          =  "0" / NON_ZERO_DIGIT
+NUMBER         =  NON_ZERO_DIGIT / (NON_ZERO_DIGIT DIGIT*)
+ATTRIBUTE      =  NUMBER
+VALUE          =  NUMBER
+OPERATOR       =  ":" / "~"
+BASE_EXPR      =  ATTRIBUTE OPERATOR VALUE
+LOGIC          =  "&" / "|"
+EXPR           =  BASE_EXPR / (LOGIC "(" EXPR ")" "(" EXPR ")")
+
+EASY_EXPR      =  BASE_EXPR / 
+                  (LOGIC "(" BASE_EXPR ")" "(" BASE_EXPR ")")
+*/
+
 #include <algorithm>
 #include <iterator>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <set>
 #include <iostream>
 
 using std::string;
-using std::map;
+using std::unordered_map;
 using std::set;
 using std::cin;
 
-map<int, map<int, set<int>>> mp;  // key -> (value -> users)
-map<int, set<int>> all_specific_usrs; // 这个 key 的所有用户
+unordered_map<int, unordered_map<int, set<int>>> mp;  // key -> (value -> users)
+unordered_map<int, set<int>> all_specific_usrs; // 这个 key 的所有用户
 
 
 int findClosing(const string &s, int start)
@@ -50,7 +66,7 @@ set<int> work(string s)
         string sub_s1 = s.substr(1, firstClose+1-1);
         set<int> v1 = work(sub_s1);
 
-        string sub_s2 = s.substr(firstClose+1, findClosing(s, firstClose+1)+1 -firstClose-1);
+        string sub_s2 = s.substr(firstClose+1, s.size() - firstClose - 1);
         set<int> v2 = work(sub_s2);
 
         set<int> tmpAns;
@@ -99,36 +115,55 @@ set<int> work(string s)
 
 int main()
 {
-    std::ios::sync_with_stdio(0);
-    cin.tie(0);
-    std::cout.tie(0);
-
-    int n; cin >> n;
+    int n; scanf("%d", &n);
     for(int i = 1; i <=n; ++i)
     {
         int usr, tmp_cnt;
-        // scanf("%d%d", &usr, &tmp_cnt);
-        cin >> usr >> tmp_cnt;
+        scanf("%d%d", &usr, &tmp_cnt);
         while(tmp_cnt--)
         {
             int k, v;
-            // scanf("%d%d", &k, &v);
-            cin >> k >> v;
+            scanf("%d%d", &k, &v);
             mp[k][v].insert(usr);
             all_specific_usrs[k].insert(usr);
         }
     }
 
-    int m; cin >> m;
+    int m; scanf("%d", &m);
     while(m--)
     {
         string s; cin >> s;
         set<int> ans = work(s);
 
         for(auto& i : ans)
-            std::cout << i << " ";
-        std::cout << "\n";
+            printf("%d ", i);
+        printf("\n");
     }
 
     return 0;
 }
+
+/*  正确
+8
+1 2 1 2 2 3
+2 2 1 2 3 1
+3 1 1 3
+4 3 1 2 2 3 3 1
+5 2 2 3 3 2
+6 2 1 3 3 1
+7 1 2 3
+8 2 1 2 3 2
+6
+1:2
+1 2 4 8 
+1~2
+3 6 
+&(1:2)(3:1)
+2 4 
+|(1~2)(2:3)
+1 3 4 5 6 7 
+&(|(1:2)(3:1))(1:2)
+1 2 4 8 
+&(1:2)(&(3:1)(|(1~2)(3:2)))
+
+*/
