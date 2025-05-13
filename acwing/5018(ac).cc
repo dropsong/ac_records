@@ -1,5 +1,3 @@
-// tle
-
 // link: https://www.acwing.com/problem/content/description/5021/
 // author: https://github.com/dropsong
 // 逻辑运算转化为集合运算
@@ -21,19 +19,21 @@ EASY_EXPR      =  BASE_EXPR /
 */
 
 #include <algorithm>
-#include <iterator>
 #include <string>
 #include <unordered_map>
-#include <set>
+#include <bitset>
 #include <iostream>
+#include <vector>
 
 using std::string;
 using std::unordered_map;
-using std::set;
+using std::bitset;
 using std::cin;
+using std::vector;
 
-unordered_map<int, unordered_map<int, set<int>>> mp;  // key -> (value -> users)
-unordered_map<int, set<int>> all_specific_usrs; // 这个 key 的所有用户
+unordered_map<int, unordered_map<int, bitset<2505>>> mp;  // key -> (value -> users)
+unordered_map<int, bitset<2505>> all_specific_usrs;       // 这个 key 的所有用户
+int q[2505]; // user_id
 
 
 int findClosing(const string &s, int start)
@@ -48,7 +48,7 @@ int findClosing(const string &s, int start)
 }
 
 
-set<int> work(string s)
+bitset<2505> work(string s)
 {
     if(s.empty()) return {};
 
@@ -64,22 +64,18 @@ set<int> work(string s)
     {
         int firstClose = findClosing(s, 1);
         string sub_s1 = s.substr(1, firstClose+1-1);
-        set<int> v1 = work(sub_s1);
+        bitset<2505> v1 = work(sub_s1);
 
         string sub_s2 = s.substr(firstClose+1, s.size() - firstClose - 1);
-        set<int> v2 = work(sub_s2);
+        bitset<2505> v2 = work(sub_s2);
 
-        set<int> tmpAns;
+        bitset<2505> tmpAns;
 
         if(s[0] == '&')
-            std::set_intersection(v1.begin(), v1.end(),
-                                  v2.begin(), v2.end(),
-                                  std::inserter(tmpAns, tmpAns.begin()));
+            tmpAns = v1 & v2;
 
-        if(s[0] == '|')
-            std::set_union(v1.begin(), v1.end(),
-                           v2.begin(), v2.end(),
-                           std::inserter(tmpAns, tmpAns.begin()));
+        else if(s[0] == '|')
+            tmpAns = v1 | v2;
 
         return tmpAns;
     }
@@ -93,19 +89,12 @@ set<int> work(string s)
         char op = s[pos];
         int value = std::stoi(s.substr(pos + 1));
 
-        auto it = mp.find(key);
-        // it->second  这是 map: value->users
-
-        if(op == ':') return it->second[value];
+        if(op == ':') return mp[key][value];
         else if(op == '~') // 取补集
         {
-            auto tmp = it->second[value];
-            // 取 tmp 在 all_specific_usrs[key] 中的补集
-            set<int> complement;
-            std::set_difference(all_specific_usrs[key].begin(), all_specific_usrs[key].end(),
-                                tmp.begin(), tmp.end(),
-                                std::inserter(complement, complement.begin()));
-            return complement;
+            bitset users_with_kv = mp[key][value];
+            bitset users_with_k = all_specific_usrs[key];
+            return (~users_with_kv) & users_with_k;
         }
     }
 
@@ -118,14 +107,14 @@ int main()
     int n; scanf("%d", &n);
     for(int i = 1; i <=n; ++i)
     {
-        int usr, tmp_cnt;
-        scanf("%d%d", &usr, &tmp_cnt);
+        int tmp_cnt;
+        scanf("%d%d", &q[i], &tmp_cnt);
         while(tmp_cnt--)
         {
             int k, v;
             scanf("%d%d", &k, &v);
-            mp[k][v].insert(usr);
-            all_specific_usrs[k].insert(usr);
+            mp[k][v].set(i);
+            all_specific_usrs[k].set(i);
         }
     }
 
@@ -133,10 +122,18 @@ int main()
     while(m--)
     {
         string s; cin >> s;
-        set<int> ans = work(s);
+        bitset<2505> ans = work(s);
+        vector<int> sorted_ans;
 
-        for(auto& i : ans)
-            printf("%d ", i);
+        for(int i = 1; i <= n; ++i)
+            if(ans[i]) sorted_ans.push_back(q[i]);
+
+        sort(sorted_ans.begin(), sorted_ans.end());
+
+        for(int i = 0; i < sorted_ans.size(); ++i)
+        {
+            printf("%d ", sorted_ans[i]);
+        }
         printf("\n");
     }
 
