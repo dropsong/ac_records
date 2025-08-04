@@ -1,6 +1,6 @@
 // link: https://leetcode.cn/problems/3sum/description/
 // 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
-// 309 / 314 个通过的测试用例
+// 313 / 314 个通过的测试用例
 
 #include <iostream>
 #include <unordered_set>
@@ -33,18 +33,28 @@ public:
 
         for(int i = 0; i < nums.size(); ++i) {
             for(int j = i+1; j < nums.size(); ++j) {
-                for(int k = j+1; k < nums.size(); ++k) {
-                    if(nums[i]+nums[j]+nums[k] > 0) break;
-                    if(nums[i]+nums[j]+nums[k] == 0) {
-                        if(mymap.count({nums[i], nums[j], nums[k]}) == 0) {
-                            ans.push_back({nums[i], nums[j], nums[k]});
-                            mymap.insert({nums[i], nums[j], nums[k]});
-                        }
+                int subsum = nums[i] + nums[j];
+                int l = j+1, r = nums.size(), mid = -1;
+                bool flag = false;
+                while(l < r) {
+                    mid = (l+r)/2;
+                    if(subsum + nums[mid] == 0) {
+                        flag = true;
+                        break;
+                    }
+                    else if(subsum + nums[mid] < 0) {l = mid + 1;}
+                    else {r = mid;}
+                }
+
+                if(flag) {
+                    if(mymap.count({nums[i], nums[j], nums[mid]}) == 0) {
+                        ans.push_back({nums[i], nums[j], nums[mid]});
+                        mymap.insert({nums[i], nums[j], nums[mid]});
                     }
                 }
             }
         }
-        
+
         return ans;
     }
 };
@@ -59,7 +69,7 @@ int main()
 
     for(auto v : ans) {
         for(auto vv : v) {
-            cout << vv;
+            cout << vv << " ";
         }
         cout << std::endl;
     }
