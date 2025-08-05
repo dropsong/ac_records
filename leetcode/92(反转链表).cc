@@ -3,7 +3,7 @@
 // 解析见同目录下图片
 
 #include <iostream>
-#define DEBUG
+// #define DEBUG
 
 using std::cout;
 
@@ -51,11 +51,12 @@ public:
         ListNode* ans = head;
         ListNode* pioneer = head->next;
         ListNode* pre = nullptr;  // head 的前一个 
-        ListNode  *mid_tail, *third_head;
+        ListNode  *mid_tail, *third_head, *start_p;
 
         while(true) {
             if(pos == left) {
                 mid_tail = head;
+                start_p = pre;
             }
 
             pre = head;
@@ -69,7 +70,7 @@ public:
                 break;
             }
         }
-        ans->next = reverseList(mid_tail);
+        start_p->next = reverseList(mid_tail);
         mid_tail->next = third_head;
 
         if(flag) return ans->next;  // 转化问题
@@ -89,7 +90,7 @@ int main()
     ListNode qwq1(1, &qwq2);
 
     Solution S;
-    ListNode *p = S.reverseBetween(&qwq1, 3, 4);
+    ListNode *p = S.reverseBetween(&qwq1, 1, 4);
     // ListNode* p = S.reverseList(&qwq1);
     while(p)
     {
